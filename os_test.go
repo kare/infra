@@ -70,7 +70,6 @@ func TestGetenvDefault(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			os.Clearenv()
 			setenv(t, tt.env)
 			got := infra.GetenvDefault(tt.args.key, tt.args.defaultValue)
