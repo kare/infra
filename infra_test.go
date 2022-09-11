@@ -2,6 +2,7 @@ package infra_test
 
 import (
 	"errors"
+	"os"
 	"reflect"
 	"testing"
 
@@ -67,6 +68,71 @@ func TestMustPanicOnError(t *testing.T) {
 				}
 			}()
 			_ = infra.Must(tc.args.value, tc.args.err)
+		})
+	}
+}
+
+func TestIsDevelopment(t *testing.T) {
+	tests := []struct {
+		name string
+		env  string
+		want bool
+	}{
+		{
+			name: "ENV is set to development",
+			env:  "development",
+			want: true,
+		},
+		{
+			name: "ENV is production",
+			env:  "production",
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		tc := tt
+		t.Run(tc.name, func(t *testing.T) {
+			os.Setenv("ENV", tc.env)
+			if got := infra.IsDevelopment(); got != tc.want {
+				t.Errorf("IsDevelopment() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+func TestIsProduction(t *testing.T) {
+	tests := []struct {
+		name string
+		env  string
+		want bool
+	}{
+		{
+			name: "ENV is set to development",
+			env:  "development",
+			want: false,
+		},
+		{
+			name: "ENV is production",
+			env:  "production",
+			want: true,
+		},
+		{
+			name: "ENV is empty",
+			env:  "",
+			want: true,
+		},
+		{
+			name: "ENV is foobar",
+			env:  "foobar",
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		tc := tt
+		t.Run(tc.name, func(t *testing.T) {
+			os.Setenv("ENV", tc.env)
+			if got := infra.IsProduction(); got != tc.want {
+				t.Errorf("IsProduction() = %v, want %v", got, tc.want)
+			}
 		})
 	}
 }
