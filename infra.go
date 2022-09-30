@@ -24,3 +24,8 @@ func IsDevelopment() bool {
 func IsProduction() bool {
 	return !IsDevelopment()
 }
+
+// IsCI returns true if environment variable CI has value true and false otherwise.
+func IsCI() bool {
+	return os.Getenv("CI") == "true"
+}

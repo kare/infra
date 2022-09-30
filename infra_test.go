@@ -136,3 +136,41 @@ func TestIsProduction(t *testing.T) {
 		})
 	}
 }
+
+func TestIsCI(t *testing.T) {
+	tests := []struct {
+		name string
+		env  string
+		want bool
+	}{
+		{
+			name: "CI is set to true",
+			env:  "true",
+			want: true,
+		},
+		{
+			name: "CI is TRUE",
+			env:  "TRUE",
+			want: false,
+		},
+		{
+			name: "CI is empty",
+			env:  "",
+			want: false,
+		},
+		{
+			name: "CI is foobar",
+			env:  "foobar",
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		tc := tt
+		t.Run(tc.name, func(t *testing.T) {
+			os.Setenv("CI", tc.env)
+			if got := infra.IsCI(); got != tc.want {
+				t.Errorf("IsCI() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
