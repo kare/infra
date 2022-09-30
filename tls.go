@@ -5,7 +5,6 @@ import "crypto/tls"
 // TLSConfig returns secure TLS configuration for Internet server.
 func TLSConfig(getCert func() func(*tls.ClientHelloInfo) (*tls.Certificate, error)) *tls.Config {
 	conf := &tls.Config{
-		GetCertificate: getCert(),
 		// Causes servers to use Go's default ciphersuite preferences, which
 		// are tuned to avoid attacks. Does nothing on clients.
 		PreferServerCipherSuites: true,
@@ -26,6 +25,9 @@ func TLSConfig(getCert func() func(*tls.ClientHelloInfo) (*tls.Certificate, erro
 		NextProtos: []string{
 			"h2", "http/1.1", // enable HTTP/2
 		},
+	}
+	if getCert != nil {
+		conf.GetCertificate = getCert()
 	}
 	return conf
 }
