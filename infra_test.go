@@ -5,12 +5,16 @@ package infra_test
 
 import (
 	"errors"
+	"log"
 	"os"
 	"reflect"
 	"testing"
 
 	"kkn.fi/infra"
 )
+
+// Test that standard Logger can be casted to infra.Logger.
+var _ infra.Logger = (*log.Logger)(nil)
 
 func TestMust(t *testing.T) {
 	type args struct {
