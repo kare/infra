@@ -1,5 +1,11 @@
 ---
-name: Release created
+name: CI
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 on:
   release:
     types:
