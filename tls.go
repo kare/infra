@@ -3,6 +3,7 @@ package infra
 import (
 	"crypto/tls"
 
+	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -30,6 +31,7 @@ func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) fun
 // TLSConfig returns secure TLS configuration for Internet server.
 func TLSConfig(getCertificate func(*tls.ClientHelloInfo) (*tls.Certificate, error)) *tls.Config {
 	conf := &tls.Config{
+		GetCertificate: getCertificate,
 		// Causes servers to use Go's default ciphersuite preferences, which
 		// are tuned to avoid attacks. Does nothing on clients.
 		PreferServerCipherSuites: true,
@@ -50,10 +52,8 @@ func TLSConfig(getCertificate func(*tls.ClientHelloInfo) (*tls.Certificate, erro
 		NextProtos: []string{
 			"h2",
 			"http/1.1",
+			acme.ALPNProto,
 		},
-	}
-	if getCertificate != nil {
-		conf.GetCertificate = getCertificate
 	}
 	return conf
 }
