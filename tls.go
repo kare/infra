@@ -7,6 +7,15 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 )
 
+func GetDevelopmentCert(certFile, keyFile string) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
+		if err != nil {
+			return nil, err
+		}
+		return &cert, nil
+	}
+}
 func GetCertificateFuncFromFiles(certFile, keyFile string) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
@@ -26,6 +35,28 @@ func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) fun
 		return GetCertificateFuncFromLetsEncrypt(m)
 	}
 	return GetCertificateFuncFromFiles(devCertFile, devKeyFile)
+}
+
+func GoodTLSConfig(src *tls.Config) *tls.Config {
+	result := &(*src)
+	// Causes servers to use Go's default ciphersuite preferences, which
+	// are tuned to avoid attacks. Does nothing on clients.
+	result.PreferServerCipherSuites = true
+	// Only use curves which have assembly implementations.
+	result.CurvePreferences = []tls.CurveID{
+		tls.CurveP256,
+		tls.X25519,
+	}
+	result.MinVersion = tls.VersionTLS12
+	result.CipherSuites = []uint16{
+		tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+		tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+		tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+		tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+		tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+		tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+	}
+	return result
 }
 
 // TLSConfig returns secure TLS configuration for Internet server.
