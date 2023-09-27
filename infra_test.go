@@ -125,12 +125,12 @@ func TestIsProduction(t *testing.T) {
 		{
 			name: "ENV is empty",
 			env:  "",
-			want: true,
+			want: false,
 		},
 		{
 			name: "ENV is foobar",
 			env:  "foobar",
-			want: true,
+			want: false,
 		},
 	}
 	for _, tt := range tests {
