@@ -105,6 +105,7 @@ func TestIsDevelopment(t *testing.T) {
 		})
 	}
 }
+
 func TestIsProduction(t *testing.T) {
 	tests := []struct {
 		name string
