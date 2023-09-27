@@ -38,7 +38,7 @@ func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) fun
 }
 
 func GoodTLSConfig(src *tls.Config) *tls.Config {
-	result := &(*src)
+	result := src
 	// Causes servers to use Go's default ciphersuite preferences, which
 	// are tuned to avoid attacks. Does nothing on clients.
 	result.PreferServerCipherSuites = true
