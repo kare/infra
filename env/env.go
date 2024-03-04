@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Env represents runtime environment.
 type Env string
 
 func (e Env) String() string {
@@ -26,8 +27,10 @@ const (
 	Production = Env(production)
 )
 
+// EnvDefault is the default runtime environment.
 var EnvDefault = Production
 
+// MustParseEnv calls [ParseEnv] and on error returns [EnvDefault].
 func MustParseEnv(s string) Env {
 	if e, err := ParseEnv(s); err != nil {
 		return EnvDefault
@@ -35,6 +38,7 @@ func MustParseEnv(s string) Env {
 	return e
 }
 
+// ParseEnv parses environment from string and on unknown environment fails with error.
 func ParseEnv(s string) (Env, error) {
 	e := strings.ToLower(strings.TrimSpace(s))
 	switch e {
