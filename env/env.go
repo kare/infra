@@ -34,8 +34,9 @@ var EnvDefault = Production
 func MustParseEnv(s string) Env {
 	if e, err := ParseEnv(s); err != nil {
 		return EnvDefault
+	} else {
+		return e
 	}
-	return e
 }
 
 // ParseEnv parses environment from string and on unknown environment fails with error.
