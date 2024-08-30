@@ -1,0 +1,29 @@
+---
+documentation:
+- changed-files:
+  - any-glob-to-any-file:
+    - "LICENSE*"
+    - "*.md"
+    - "**.md"
+ci:
+- changed-files:
+  - any-glob-to-any-file:
+    - ".github/*"
+    - ".github/**"
+test:
+- changed-files:
+  - any-glob-to-any-file:
+    - "**/*_test.go"
+build:
+- changed-files:
+  - any-glob-to-any-file:
+    - ".gitignore"
+    - "Makefile"
+    - "go.*"
+    - "release*.bash"
+refactor:
+- changed-files:
+  - any-glob-to-any-file:
+    - "**/*.go"
+feature:
+  - head-branch: ['^feature']
