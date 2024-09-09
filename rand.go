@@ -5,8 +5,7 @@ import (
 	"encoding/binary"
 )
 
-// RandInt64 returns cryptographically secure random number suitable for
-// seeding the pseudo-random number generator [math/rand.Seed].
+// RandInt64 returns cryptographically secure random number.
 func RandInt64() (int64, error) {
 	var b [8]byte
 	if _, err := rand.Read(b[:]); err != nil {
