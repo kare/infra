@@ -37,6 +37,7 @@ func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) fun
 	return GetCertificateFuncFromFiles(devCertFile, devKeyFile)
 }
 
+// GoodTLSConfig conofigures given [tls.Config] with good settings.
 func GoodTLSConfig(src *tls.Config) *tls.Config {
 	result := src
 	// Only use curves which have assembly implementations.
