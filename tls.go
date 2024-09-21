@@ -46,23 +46,9 @@ func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) Get
 	return GetCertificateFuncFromFiles(devCertFile, devKeyFile)
 }
 
-// GetCertificateFromFiles loads GetCertificate func from given TLS cert files.
-func GetCertificateFromFiles(certFile, keyFile string) GetCertificate {
-	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
-		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
-		if err != nil {
-			return nil, err
-		}
-		return &cert, nil
-	}
-}
-
-// GetCertificateFromLetsEncrypt loads GetCertificate func from given Let's Encrypt Manager.
-func GetCertificateFromLetsEncrypt(m *autocert.Manager) GetCertificate {
-	return m.GetCertificate
-}
-
 // GoodTLSConfig configures a copy of given [tls.Config] with good settings.
+//
+// Deprecated: GooldTLSConfig is unused.
 func GoodTLSConfig(src *tls.Config) *tls.Config {
 	result := src
 	// Only use curves which have assembly implementations.
@@ -80,6 +66,22 @@ func GoodTLSConfig(src *tls.Config) *tls.Config {
 		tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
 	}
 	return result
+}
+
+// GetCertificateFromFiles loads GetCertificate func from given TLS cert files.
+func GetCertificateFromFiles(certFile, keyFile string) GetCertificate {
+	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
+		if err != nil {
+			return nil, err
+		}
+		return &cert, nil
+	}
+}
+
+// GetCertificateFromLetsEncrypt loads GetCertificate func from given Let's Encrypt Manager.
+func GetCertificateFromLetsEncrypt(m *autocert.Manager) GetCertificate {
+	return m.GetCertificate
 }
 
 // TLSConfig returns secure TLS configuration for Internet server.
