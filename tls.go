@@ -68,6 +68,13 @@ func GoodTLSConfig(src *tls.Config) *tls.Config {
 
 // TLSConfig returns secure TLS configuration for Internet server.
 func TLSConfig(getCertificate GetCertificate) *tls.Config {
+	nextProtos := []string{
+		"h2",
+		"http/1.1",
+	}
+	if IsProduction() {
+		nextProtos = append(nextProtos, acme.ALPNProto)
+	}
 	conf := &tls.Config{
 		GetCertificate: getCertificate,
 		// Causes servers to use Go's default ciphersuite preferences, which
@@ -87,11 +94,7 @@ func TLSConfig(getCertificate GetCertificate) *tls.Config {
 			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
 			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
 		},
-		NextProtos: []string{
-			"h2",
-			"http/1.1",
-			acme.ALPNProto,
-		},
+		NextProtos: nextProtos,
 	}
 	return conf
 }
