@@ -77,9 +77,6 @@ func TLSConfig(getCertificate GetCertificate) *tls.Config {
 	}
 	conf := &tls.Config{
 		GetCertificate: getCertificate,
-		// Causes servers to use Go's default ciphersuite preferences, which
-		// are tuned to avoid attacks. Does nothing on clients.
-		PreferServerCipherSuites: true,
 		// Only use curves which have assembly implementations.
 		CurvePreferences: []tls.CurveID{
 			tls.CurveP256,
