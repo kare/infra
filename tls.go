@@ -7,8 +7,11 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 )
 
+// GetCertificate returns a Certificate based on the given ClientHelloInfo.
+type GetCertificate func(*tls.ClientHelloInfo) (*tls.Certificate, error)
+
 // Deprecated: GetDevelopmentCert is deprecated. Use GetCertificateFuncFromFiles instead.
-func GetDevelopmentCert(certFile, keyFile string) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+func GetDevelopmentCert(certFile, keyFile string) GetCertificate {
 	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 		if err != nil {
@@ -17,7 +20,7 @@ func GetDevelopmentCert(certFile, keyFile string) func(*tls.ClientHelloInfo) (*t
 		return &cert, nil
 	}
 }
-func GetCertificateFuncFromFiles(certFile, keyFile string) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+func GetCertificateFuncFromFiles(certFile, keyFile string) GetCertificate {
 	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 		if err != nil {
@@ -27,11 +30,11 @@ func GetCertificateFuncFromFiles(certFile, keyFile string) func(*tls.ClientHello
 	}
 }
 
-func GetCertificateFuncFromLetsEncrypt(m *autocert.Manager) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+func GetCertificateFuncFromLetsEncrypt(m *autocert.Manager) GetCertificate {
 	return m.GetCertificate
 }
 
-func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
+func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) GetCertificate {
 	if IsProduction() {
 		return GetCertificateFuncFromLetsEncrypt(m)
 	}
@@ -59,7 +62,7 @@ func GoodTLSConfig(src *tls.Config) *tls.Config {
 }
 
 // TLSConfig returns secure TLS configuration for Internet server.
-func TLSConfig(getCertificate func(*tls.ClientHelloInfo) (*tls.Certificate, error)) *tls.Config {
+func TLSConfig(getCertificate GetCertificate) *tls.Config {
 	conf := &tls.Config{
 		GetCertificate: getCertificate,
 		// Causes servers to use Go's default ciphersuite preferences, which
