@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 )
 
+// Deprecated: GetDevelopmentCert is deprecated. Use GetCertificateFuncFromFiles instead.
 func GetDevelopmentCert(certFile, keyFile string) func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
