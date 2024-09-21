@@ -20,6 +20,8 @@ func GetDevelopmentCert(certFile, keyFile string) GetCertificate {
 		return &cert, nil
 	}
 }
+
+// GetCertificateFuncFromFiles loads GetCertificate func from given TLS cert files.
 func GetCertificateFuncFromFiles(certFile, keyFile string) GetCertificate {
 	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
@@ -30,10 +32,13 @@ func GetCertificateFuncFromFiles(certFile, keyFile string) GetCertificate {
 	}
 }
 
+// GetCertificateFuncFromLetsEncrypt loads GetCertificate func from given Let's Encrypt Manager.
 func GetCertificateFuncFromLetsEncrypt(m *autocert.Manager) GetCertificate {
 	return m.GetCertificate
 }
 
+// GetCertificateFunc loads certificates for development or production depending on return value
+// of function [kkn.fi/infra#IsProduction].
 func GetCertificateFunc(m *autocert.Manager, devCertFile, devKeyFile string) GetCertificate {
 	if IsProduction() {
 		return GetCertificateFuncFromLetsEncrypt(m)
