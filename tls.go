@@ -3,7 +3,6 @@ package infra
 import (
 	"crypto/tls"
 
-	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -28,13 +27,6 @@ func GetCertificateFromLetsEncrypt(m *autocert.Manager) GetCertificate {
 
 // TLSConfig returns secure TLS configuration for Internet server.
 func TLSConfig(getCertificate GetCertificate) *tls.Config {
-	nextProtos := []string{
-		"h2",
-		"http/1.1",
-	}
-	if IsProduction() {
-		nextProtos = append(nextProtos, acme.ALPNProto)
-	}
 	conf := &tls.Config{
 		GetCertificate: getCertificate,
 		// Only use curves which have assembly implementations.
@@ -51,7 +43,6 @@ func TLSConfig(getCertificate GetCertificate) *tls.Config {
 			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
 			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
 		},
-		NextProtos: nextProtos,
 	}
 	return conf
 }
