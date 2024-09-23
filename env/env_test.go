@@ -116,3 +116,17 @@ func TestParseEnv(t *testing.T) {
 		})
 	}
 }
+
+func TestMustParseEnvDevelopment(t *testing.T) {
+	e := env.MustParseEnv("development")
+	if e != env.Development {
+		t.Errorf("expecting development env, got '%s'", e)
+	}
+}
+
+func TestMustParseEnvDefault(t *testing.T) {
+	e := env.MustParseEnv("404")
+	if e != env.EnvDefault {
+		t.Errorf("expecting default env, got '%v'", e)
+	}
+}
