@@ -2,9 +2,19 @@ package infra
 
 import (
 	"crypto/tls"
+	"fmt"
 
 	"golang.org/x/crypto/acme/autocert"
 )
+
+// certLoadError represents an error that occurred while loading a TLS certificate from a file.
+type certLoadError struct {
+	error
+}
+
+func (e *certLoadError) Error() string {
+	return fmt.Sprintf("infra: error loading TLS certificate files: %v", e.error)
+}
 
 // GetCertificate returns a Certificate based on the given ClientHelloInfo.
 type GetCertificate func(*tls.ClientHelloInfo) (*tls.Certificate, error)
@@ -14,7 +24,10 @@ func GetCertificateFromFiles(certFile, keyFile string) GetCertificate {
 	return func(*tls.ClientHelloInfo) (*tls.Certificate, error) {
 		cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 		if err != nil {
-			return nil, err
+			e := &certLoadError{
+				err,
+			}
+			return nil, e
 		}
 		return &cert, nil
 	}
